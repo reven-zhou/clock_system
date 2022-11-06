@@ -3,7 +3,9 @@ import axios from "axios";
 import { GetLiatCard } from "../util/getLIstCard";
 import useCardStore from "../store/cardSrore";
 import useAuthStore from "../store/authStore";
+import { reqUseCard, reqGetCard, reqMeltCard } from "../api";
 
+/* 这里不要了，改成动态的 */
 const listCard = [
   {
     cardId: 1,
@@ -63,75 +65,38 @@ const ManageCard = ({ user }) => {
   /* 抽卡 */
   const handleGetCard = (e) => {
     e.preventDefault();
-    axios
-      .get(`http://101.43.184.218:9527/user/sample`, {
-        headers: {
-          token: JSON.parse(localStorage.getItem("token")),
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        // addUser({ ...user, ["integral"]: integral - 1 });
-        if (myIntegral - 1 >= 0) {
-          addmyIntegral(myIntegral - 1);
-        }
-        if (res.data.code === 200) {
-          alert(res.data.msg + "请刷新!");
-        } else {
-          alert("Oops,好像出问题了");
-        }
-      });
+    reqGetCard().then(() => {
+      if (myIntegral - 1 >= 0) {
+        addmyIntegral(myIntegral - 1);
+      }
+      alert("成功");
+    });
   };
 
   /* 融卡 */
   const handleMeltCard = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        `http://101.43.184.218:9527/user/meltCard?cardId=${userCardId}`,
-        "",
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // addUser({ ...user, ["integral"]: integral + 1 });
-        if (res.data.msg === "融换成功!") {
-          addmyIntegral(myIntegral + 1);
-        }
-        if (res.data.code === 200) {
-          alert(res.data.msg + "请刷新!");
-        } else {
-          alert("是不是还没选卡?");
-        }
-      });
+    reqMeltCard(userCardId).then(() => {
+      // addUser({ ...user, ["integral"]: integral + 1 });
+      // if (res.data.msg === "融换成功!") {
+      addmyIntegral(myIntegral + 1);
+      alert("融化成功");
+      // }
+      // if (res.data.code === 200) {
+      //   alert(res.data.msg + "请刷新!");
+      // } else {
+      //   alert("是不是还没选卡?");
+      // }
+    });
   };
 
   /* 用卡 */
   const handleUseCard = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        `http://101.43.184.218:9527/user/useCard?cardId=${userCardId}&userId=${userId}`,
-        "",
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.code === 200) {
-          alert(res.data.msg + "请刷新!");
-          setUserId("");
-        } else {
-          alert("是不是还没选卡?还是说没输入用户id?");
-        }
-      });
+    reqUseCard(userCardId, userId).then(() => {
+      alert("成功!请刷新!");
+      setUserId("");
+    });
   };
 
   return (
@@ -150,14 +115,15 @@ const ManageCard = ({ user }) => {
             style={{ backgroundColor: "rgb(81, 140, 180)" }}
             className="collapse-content bg-accent text-primary-content peer-checked:text-secondary-content"
           >
+            {/* 改文本 */}
             <p>1、每位用户有2分的初始积分和3张卡券</p>
             <p>3、每周全勤打卡奖励3积分</p>
             <p>4、超出打卡时长n小时就送n积分</p>
             <p>5、消耗积分即可抽卡</p>
             <p>6、可选择融卡获得积分, 1张卡为1积分</p>
             <p>
-              7、使用加时卡和黑卡需指定用户ID, 可在年级打卡表得到
-              (注: 其余卡为群体效果, 用户ID可随意填写)
+              7、使用加时卡和黑卡需指定用户ID, 可在年级打卡表得到 (注:
+              其余卡为群体效果, 用户ID可随意填写)
             </p>
             <p>8、会有一点点延迟, 请不要狂点</p>
           </div>

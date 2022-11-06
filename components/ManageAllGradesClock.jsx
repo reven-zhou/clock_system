@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { GetAllGradesClock } from "../util/manageClock";
 import useAllGradesClockStore from "../store/clockStore";
-import axios from "axios";
+import { reqModifySomeClock, reqModifyPersonClock } from "../api";
 
 const ManageAllGradesClock = ({ allGradesClock }) => {
   const [stateId, setStateId] = useState(new Set([]));
@@ -15,25 +15,14 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = Array.from(stateId);
-    axios
-      .post(
-        `http://101.43.184.218:9527/manager/modifySomeTempTime?time=${time}`,
-        JSON.stringify(params),
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
-        GetAllGradesClock(
-          JSON.parse(localStorage.getItem("token")),
-          addAllGradesClock
-        );
-        setTime("");
-      });
+    reqModifySomeClock(time, params).then(() => {
+      alert("修改成功");
+      GetAllGradesClock(
+        JSON.parse(localStorage.getItem("token")),
+        addAllGradesClock
+      );
+      setTime("");
+    });
   };
 
   const handlePersonSubmit = (e) => {
@@ -44,28 +33,17 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
       tempTime,
       allTime,
     };
-    axios
-      .post(
-        `http://101.43.184.218:9527/manager/modifyClock`,
-        JSON.stringify(params),
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
-        GetAllGradesClock(
-          JSON.parse(localStorage.getItem("token")),
-          addAllGradesClock
-        );
-        setUserId("");
-        setCurTime("");
-        setTempTime("");
-        setallTime("");
-      });
+    reqModifyPersonClock(params).then(() => {
+      alert("修改成功");
+      GetAllGradesClock(
+        JSON.parse(localStorage.getItem("token")),
+        addAllGradesClock
+      );
+      setUserId("");
+      setCurTime("");
+      setTempTime("");
+      setallTime("");
+    });
   };
 
   return (
@@ -115,7 +93,7 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
               onClick={handlePersonSubmit}
               type="submit"
               className="btn text-white border-0 transition duration-500 ease transform hover:-translate-y-1"
-            style={{"backgroundColor":"rgb(81, 140, 180)"}}
+              style={{ backgroundColor: "rgb(81, 140, 180)" }}
             >
               提交
             </button>
@@ -141,7 +119,7 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
               onClick={handleSubmit}
               type="submit"
               className="btn text-white border-0 transition duration-500 ease transform hover:-translate-y-1"
-            style={{"backgroundColor":"rgb(81, 140, 180)"}}
+              style={{ backgroundColor: "rgb(81, 140, 180)" }}
             >
               提交
             </button>
@@ -169,7 +147,6 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
                   clock={clock}
                   stateId={stateId}
                   setStateId={setStateId}
-
                   setCurTime={setCurTime}
                   setTempTime={setTempTime}
                   setallTime={setallTime}
@@ -185,7 +162,15 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
   );
 };
 
-function Table({ clock, stateId, setStateId,setCurTime,setTempTime,setUserId,setallTime }) {
+function Table({
+  clock,
+  stateId,
+  setStateId,
+  setCurTime,
+  setTempTime,
+  setUserId,
+  setallTime,
+}) {
   const inputref = useRef();
   const [checked, setChecked] = useState(false);
   const handleChange = () => {

@@ -6,7 +6,7 @@ const baseInfo = (set) => ({
         curWeek: 0,
         dayOfWeek: 0,
         notify: "",
-        isClean: false,
+        clean: false,
         online: 0,
         extra: "",
         names: "",

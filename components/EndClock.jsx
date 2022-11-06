@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { GetAllGradesClock } from "../util/manageClock";
 import useAllGradesClockStore from "../store/clockStore";
 import axios from "axios";
+import { reqAdminEndClock } from "../api";
 
 const EndClock = ({ allGradesClock }) => {
   const [stateId, setStateId] = useState(new Set([]));
@@ -11,23 +12,13 @@ const EndClock = ({ allGradesClock }) => {
     e.preventDefault();
     const params = Array.from(stateId);
     const userId = params[0];
-    axios
-      .post(
-        `http://101.43.184.218:9527/captain/endClockByUserId?userId=${userId}`,
-        "",
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
+    reqAdminEndClock(userId).then(()=>{
+      alert('修改成功');
         GetAllGradesClock(
           JSON.parse(localStorage.getItem("token")),
           addAllGradesClock
         );
-      });
+    })
   };
 
   return (

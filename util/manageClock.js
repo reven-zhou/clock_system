@@ -1,10 +1,8 @@
 import axios from "axios"
+import { reqGetAllClock } from "../api";
 
-export const GetAllGradesClock = async (token,addAllGradesClock)=>{
-    const res = await axios.get(`http://101.43.184.218:9527/user/getAllClock`,{
-        headers:{
-            token:token,
-        }
-    });
-    addAllGradesClock(res.data.data);
+export const GetAllGradesClock = async (token, addAllGradesClock) => {
+    reqGetAllClock().then((data) => {
+        addAllGradesClock(data.data)
+    })
 }

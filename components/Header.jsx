@@ -10,6 +10,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import useAuthStore from "../store/authStore";
 import axios from "axios";
 import Router from "next/router";
+import { reqLogOut } from "../api";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -41,19 +42,13 @@ const Header = () => {
     }
   }, [grade1, grade2, grade3]);
 
-  const handleLogout = async () => {
-    await axios
-      .get("http://101.43.184.218:9527/user/lout", {
-        headers: {
-          token: JSON.parse(localStorage.getItem("token")),
-        },
-      })
-      .then(() => {
-        removeUser();
+  const handleLogout = () => {
+    reqLogOut().then(()=>{
+      removeUser();
         removeTitle();
         localStorage.removeItem("token");
         Router.replace("/");
-      });
+    });
   };
 
   return (
@@ -90,7 +85,9 @@ const Header = () => {
                               "group inline-flex items-center rounded-md bg-white text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:ring-offset-2 text-center"
                             )}
                           >
-                            <span className="text-center items-center p-2">年级</span>
+                            <span className="text-center items-center p-2">
+                              年级
+                            </span>
                             <ChevronDownIcon
                               className={classNames(
                                 open ? "text-gray-600" : "text-gray-400",
@@ -112,33 +109,34 @@ const Header = () => {
                             <Popover.Panel className="absolute z-10 -ml-4 mt-3 w-screen max-w-md transform px-2 sm:px-0 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2">
                               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                                 <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                                  <div className="cursor-pointer -m-3 flex items-start rounded-lg p-3 hover:bg-rose-50">
-                                    <div className="ml-4">
-                                      <Link href={`/grade/1`}>
+                                  <Link href={`/grade/1`}>
+                                    <div className="cursor-pointer -m-3 flex items-start rounded-lg p-3 hover:bg-rose-50">
+                                      <div className="ml-4">
                                         <p className="transition delay-50 duration-300 cursor-pointer text-base font-medium text-gray-900">
                                           {grade1?.title}
                                         </p>
-                                      </Link>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="transition delay-50 duration-300 cursor-pointer -m-3 flex items-start rounded-lg p-3 hover:bg-rose-50">
-                                    <div className="ml-4">
-                                      <Link href={`/grade/2`}>
+                                  </Link>
+
+                                  <Link href={`/grade/2`}>
+                                    <div className="transition delay-50 duration-300 cursor-pointer -m-3 flex items-start rounded-lg p-3 hover:bg-rose-50">
+                                      <div className="ml-4">
                                         <p className="cursor-pointer text-base font-medium text-gray-900">
                                           {grade2?.title}
                                         </p>
-                                      </Link>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="transition delay-50 duration-300 cursor-pointer -m-3 flex items-start rounded-lg p-3 hover:bg-rose-50">
-                                    <div className="ml-4">
-                                      <Link href={`/grade/3`}>
+                                  </Link>
+                                  <Link href={`/grade/3`}>
+                                    <div className="transition delay-50 duration-300 cursor-pointer -m-3 flex items-start rounded-lg p-3 hover:bg-rose-50">
+                                      <div className="ml-4">
                                         <p className="cursor-pointer text-base font-medium text-gray-900">
                                           {grade3?.title}
                                         </p>
-                                      </Link>
+                                      </div>
                                     </div>
-                                  </div>
+                                  </Link>
                                 </div>
                               </div>
                             </Popover.Panel>
@@ -163,7 +161,9 @@ const Header = () => {
                         href={title.key}
                         className="text-base font-medium text-gray-500 hover:text-white"
                       >
-                        <div className="transition delay-50 duration-300 text-gray-500 hover:text-white hover:bg-rose-500/50 cursor-pointer p-2 rounded-lg">{title.title}</div>
+                        <div className="transition delay-50 duration-300 text-gray-500 hover:text-white hover:bg-rose-500/50 cursor-pointer p-2 rounded-lg">
+                          {title.title}
+                        </div>
                       </Link>
                     );
                 }

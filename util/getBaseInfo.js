@@ -1,15 +1,8 @@
 import axios from "axios"
+import { reqGetBaseInfo } from "../api";
 
 export const GetBaseInfo = async (token,addBaseInfo)=>{
-    const res = await axios.get(`http://101.43.184.218:9527/user/getBaseInfo`,{
-        headers:{
-            token:token,
-        }
-    });
-
-    const {curWeek,dayOfWeek,notify,isClean,online,extra,names} = res.data.data;
-    const baseInfo = {
-        curWeek,dayOfWeek,notify,isClean,online,extra,names
-    }
-    addBaseInfo(baseInfo);
+    reqGetBaseInfo().then((data)=>{
+        addBaseInfo(data.data)
+    })
 }

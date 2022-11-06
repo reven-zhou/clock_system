@@ -1,10 +1,8 @@
 import axios from "axios";
+import { reqGetSystem } from "../api";
 
-export const GetSystem = async (token,addSystem)=>{
-    const res = await axios.get(`http://101.43.184.218:9527/manager/listSystemConf`,{
-        headers:{
-            token:token,
-        }
+export const GetSystem = async (token, addSystem) => {
+    reqGetSystem().then((data) => {
+        addSystem(data.data)
     });
-    addSystem(res.data.data);
 }

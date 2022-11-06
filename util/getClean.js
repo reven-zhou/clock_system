@@ -1,11 +1,8 @@
 import axios from "axios"
+import { reqGetAllClean } from "../api";
 
 export const GetClean = async (token, addCleanInfo) => {
-    const res = await axios.get(`http://101.43.184.218:9527/manager/getCleanAll`, {
-        headers: {
-            token: token,
-        }
-    });
-
-    addCleanInfo(res.data.data);
+    reqGetAllClean().then((data) => {
+        addCleanInfo(data.data);
+    })
 }

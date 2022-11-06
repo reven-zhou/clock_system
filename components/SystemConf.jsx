@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { GetSystem } from "../util/getSystem";
 import useSystemStore from "../store/systemStore";
 import axios from "axios";
+import { reqModifySystem } from "../api";
 
 const SystemConf = ({ allSystem }) => {
   const { addSystem } = useSystemStore();
@@ -14,26 +15,15 @@ const SystemConf = ({ allSystem }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = { id, name, status, value, description };
-    axios
-      .post(
-        `http://101.43.184.218:9527/manager/modifySystemConf`,
-        JSON.stringify(params),
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
-        GetSystem(JSON.parse(localStorage.getItem("token")), addSystem);
-        setId("");
-        setName("");
-        setStatus("");
-        setValue("");
-        setDescription("");
-      });
+    reqModifySystem(params).then(() => {
+      alert(修改成功);
+      GetSystem(JSON.parse(localStorage.getItem("token")), addSystem);
+      setId("");
+      setName("");
+      setStatus("");
+      setValue("");
+      setDescription("");
+    });
   };
 
   return (
@@ -91,7 +81,7 @@ const SystemConf = ({ allSystem }) => {
             <button
               onClick={handleSubmit}
               className="btn text-white border-0 transition duration-500 ease transform hover:-translate-y-1"
-            style={{"backgroundColor":"rgb(81, 140, 180)"}}
+              style={{ backgroundColor: "rgb(81, 140, 180)" }}
             >
               提交
             </button>

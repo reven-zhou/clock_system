@@ -6,8 +6,11 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import Spinner from "./Spinner";
 import axios from "axios";
+import { useAlert } from "react-alert";
+import { reqModifyAvatar, reqModifyNotify } from "../api";
 
 const BaseInfo = ({ baseInfo, user }) => {
+  const alert = useAlert();
   const { dayProblem, allHistory } = useAuthStore();
   const [text, setText] = useState("Information");
   const [activeBtn, setActiveBtn] = useState("information");
@@ -41,6 +44,7 @@ const BaseInfo = ({ baseInfo, user }) => {
       setImageAsset(URL.createObjectURL(file));
       setLoading(false);
     } else {
+      alert.error("文件格式不正确，请重试");
       setWrongImageType(true);
     }
   };
@@ -50,36 +54,28 @@ const BaseInfo = ({ baseInfo, user }) => {
     const formdata = new FormData();
     //可以通过append()方法来追加数据
     formdata.append("avatar", avatarFile);
-    axios
-      .post(`http://101.43.184.218:9527/user/modifyAvatar`, formdata, {
-        headers: {
-          token: JSON.parse(localStorage.getItem("token")),
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      })
-      .then((res) => {
-        alert(res.data.msg + "请刷新！");
-        setImageAsset("");
-        setAvatarFile("");
-      });
+    reqModifyAvatar(formdata).then(() => {
+      alert.success("修改成功");
+      setImageAsset("");
+      setAvatarFile("");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    });
   };
 
   const handleChangeNotify = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        `http://101.43.184.218:9527/user/modifyNotify?notify=${newNotify}`,
-        "",
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-          },
-        }
-      )
-      .then((res) => {
-        setNewNotify("");
-        alert(res.data.msg + "请刷新！");
+    if (newNotify === "") {
+      alert.error("宣言不能为空");
+    } else {
+      reqModifyNotify(newNotify).then(() => {
+        alert.success("修改成功");
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       });
+    }
   };
 
   return (
@@ -100,7 +96,10 @@ const BaseInfo = ({ baseInfo, user }) => {
                 src={user.userImage}
                 alt="用户"
               />
-              <h1 className="font-bold text-3xl text-center mt-3" style={{"color":"rgb(176, 135, 141)"}}>
+              <h1
+                className="font-bold text-3xl text-center mt-3"
+                style={{ color: "rgb(176, 135, 141)" }}
+              >
                 {user.username}
               </h1>
             </div>
@@ -142,13 +141,19 @@ const BaseInfo = ({ baseInfo, user }) => {
                 <div className="flex justify-between mb-4">
                   <div
                     className="btn"
-                    style={{ color: "rgb(168, 177, 184)","backgroundColor":"white"  }}
+                    style={{
+                      color: "rgb(168, 177, 184)",
+                      backgroundColor: "white",
+                    }}
                   >
                     基本信息
                   </div>
                   <div
                     className="btn"
-                    style={{ color: "rgb(168, 177, 184)","backgroundColor":"white"  }}
+                    style={{
+                      color: "rgb(168, 177, 184)",
+                      backgroundColor: "white",
+                    }}
                   >
                     个人信息
                   </div>
@@ -219,20 +224,21 @@ const BaseInfo = ({ baseInfo, user }) => {
                           <div>
                             <h3 className="text-lg font-bold">选择一张图片</h3>
                             {/* 上传图片之前可以进行预览，可以选择清空也可以点击按钮上传 */}
-                            <div>
+                            <div className="items-center">
                               {loading && <Spinner />}
-                              {wrongImageType && <p>Wroung image type</p>}
+                              {wrongImageType && (
+                                <p className="text-center text-lg mb-4 mt-2">
+                                  错误的文件格式，请选择正确的图片
+                                </p>
+                              )}
                               {!imageAsset ? (
                                 <label>
                                   <div className="flex flex-col items-center justify-center h-full cursor-pointer">
                                     <div className="flex flex-col justify-center items-center">
-                                      <p className="">
+                                      <p className="text-3xl">
                                         <AiOutlineCloudUpload />
                                       </p>
-                                      <p className="text-lg">
-                                        {" "}
-                                        Click to Upload
-                                      </p>
+                                      <p className="text-lg"> 点击上传</p>
                                     </div>
                                     <p className="text-gray-400">
                                       Use JPG, JPEG, SVG, PNG, GIF or TIFF less
@@ -304,7 +310,7 @@ const BaseInfo = ({ baseInfo, user }) => {
                           <input
                             onChange={(e) => setNewNotify(e.target.value)}
                             type="text"
-                            placeholder="Type here"
+                            placeholder="请输入你的宣言"
                             className="input input-bordered w-full"
                           />
                           <button
@@ -325,9 +331,14 @@ const BaseInfo = ({ baseInfo, user }) => {
                 <div className="flex flex-col mt-4 mb-4">
                   <div
                     className="btn mb-4"
-                    style={{ color: "rgb(168, 177, 184)","backgroundColor":"white" }}
+                    style={{
+                      color: "rgb(168, 177, 184)",
+                      backgroundColor: "white",
+                    }}
                   >
-                    每日一题
+                    <a href={dayProblem.url} target="blank">
+                      每日一题
+                    </a>
                   </div>
                   <div
                     className="flex justify-between p-4 border rounded-lg text-white"
@@ -337,6 +348,7 @@ const BaseInfo = ({ baseInfo, user }) => {
                     <div className="">
                       链接:
                       <a
+                        target="blank"
                         href={dayProblem.url}
                         className="ml-2 link"
                         style={{ color: "rgb(245, 243, 244)" }}

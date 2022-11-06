@@ -3,6 +3,7 @@ import { GetClean } from "../util/getClean";
 import { GetBaseInfo } from "../util/getBaseInfo";
 import useCleanStore from "../store/cleanStore";
 import useBaseInfo from "../store/baseInfoStore";
+import { reqAddClean, reqModifyClean } from "../api";
 
 import axios from "axios";
 
@@ -21,25 +22,13 @@ const CleanTable = ({ cleanInfo }) => {
       realName,
       ruleWeek,
     };
-    axios
-      .post(
-        "http://101.43.184.218:9527/manager/addClean",
-        JSON.stringify(params),
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
-        setUserId("");
-        setRealName("");
-        setRuleWeek("");
-        GetClean(JSON.parse(localStorage.getItem("token")), addCleanInfo);
-        GetBaseInfo(JSON.parse(localStorage.getItem("token")), addBaseInfo);
-      });
+    reqAddClean(params).then(() => {
+      alert("添加成功");
+      setUserId("");
+      setRealName("");
+      setRuleWeek("");
+      GetClean(JSON.parse(localStorage.getItem("token")), addCleanInfo);
+    });
   };
 
   const handleModifyClean = (e) => {
@@ -50,25 +39,14 @@ const CleanTable = ({ cleanInfo }) => {
       realName,
       ruleWeek,
     };
-    axios
-      .post(
-        "http://101.43.184.218:9527/manager/modifyClean",
-        JSON.stringify(params),
-        {
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
-        setCleanId("");
-        setUserId("");
-        setRealName("");
-        setRuleWeek("");
-        GetClean(JSON.parse(localStorage.getItem("token")), addCleanInfo);
-      });
+    reqModifyClean(params).then(() => {
+      alert("修改成功");
+      setCleanId("");
+      setUserId("");
+      setRealName("");
+      setRuleWeek("");
+      GetClean(JSON.parse(localStorage.getItem("token")), addCleanInfo);
+    });
   };
 
   return (
@@ -98,12 +76,12 @@ const CleanTable = ({ cleanInfo }) => {
             />
           </div>
           <div className="flex flex-row">
-            <span className="mr-2">日期</span>
+            <span className="mr-2">周数</span>
             <input
               value={ruleWeek}
               onChange={(e) => setRuleWeek(e.target.value)}
               type="text"
-              placeholder="日期"
+              placeholder="周数"
               className="input input-bordered input-accent w-full max-w-xs"
             />
           </div>
@@ -112,7 +90,7 @@ const CleanTable = ({ cleanInfo }) => {
               type="submit"
               onClick={handleAddClean}
               className="btn text-white border-0 transition duration-500 ease transform hover:-translate-y-1"
-            style={{"backgroundColor":"rgb(81, 140, 180)"}}
+              style={{ backgroundColor: "rgb(81, 140, 180)" }}
             >
               提交
             </button>
@@ -155,18 +133,21 @@ const CleanTable = ({ cleanInfo }) => {
             />
           </div>
           <div className="flex flex-row">
-            <span className="mr-2">日期</span>
+            <span className="mr-2">周数</span>
             <input
               value={ruleWeek}
               onChange={(e) => setRuleWeek(e.target.value)}
               type="text"
-              placeholder="日期"
+              placeholder="周数"
               className="input input-bordered input-accent w-full max-w-xs"
             />
           </div>
           <div>
-            <button onClick={handleModifyClean} className="btn text-white border-0 transition duration-500 ease transform hover:-translate-y-1"
-            style={{"backgroundColor":"rgb(81, 140, 180)"}}>
+            <button
+              onClick={handleModifyClean}
+              className="btn text-white border-0 transition duration-500 ease transform hover:-translate-y-1"
+              style={{ backgroundColor: "rgb(81, 140, 180)" }}
+            >
               提交
             </button>
           </div>
@@ -181,13 +162,20 @@ const CleanTable = ({ cleanInfo }) => {
               <th className="text-lg">表ID</th>
               <th className="text-lg">用户ID</th>
               <th className="text-lg">真实姓名</th>
-              <th className="text-lg">值日日期</th>
+              <th className="text-lg">值日周</th>
             </tr>
           </thead>
           <tbody>
-            {cleanInfo?.map((item) => {
+            {cleanInfo?.map((item, index) => {
               return (
-                <Table clean={item} setCleanId={setCleanId} setRuleWeek={setRuleWeek} setRealName={setRealName} setUserId={setUserId} />
+                <Table
+                  key={index}
+                  clean={item}
+                  setCleanId={setCleanId}
+                  setRuleWeek={setRuleWeek}
+                  setRealName={setRealName}
+                  setUserId={setUserId}
+                />
               );
             })}
           </tbody>
@@ -204,7 +192,7 @@ function Table({ clean, setCleanId, setUserId, setRealName, setRuleWeek }) {
     const newCheck = !checked;
     setChecked(newCheck);
     if (inputref.current.value === "on") {
-      setCleanId(clean.cleanId)
+      setCleanId(clean.cleanId);
       setUserId(clean.userId);
       setRealName(clean.realName);
       setRuleWeek(clean.ruleWeek);

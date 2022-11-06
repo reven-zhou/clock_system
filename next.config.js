@@ -9,6 +9,10 @@ const nextConfig = {
           source: '/api/:path*',
           destination: `http://101.43.184.218:9527/api/:path*`,
         },
+        {
+          source: '/api1/:path*',
+          destination: `http://101.43.184.218:9527/:path*`,
+        }
       ],
     }
   },
