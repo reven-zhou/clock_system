@@ -6,6 +6,7 @@ import { GetBaseInfo } from "../util/getBaseInfo";
 import useAuthStore from "../store/authStore";
 import useBaseInfo from "../store/baseInfoStore";
 import Router from 'next/router'
+import { useAlert } from "react-alert";
 // import Link from "next/link";
 
 function arrayBufferToBase64(buffer) {
@@ -29,10 +30,11 @@ const initialState = {
 };
 
 const Auth = () => {
+  const alert = useAlert();
   const {addmyIntegral, addUser, getAllTitle, changeStutas, addTotalTime,addProblem,addHistory } = useAuthStore();
   const { addBaseInfo } = useBaseInfo();
   const [isSignup, setIsSignup] = useState(false);
-  const [verifyImg, setVerifyImg] = useState(null);
+  const [verifyImg, setVerifyImg] = useState('/api/verifyCode');
   const [formData, setFormData] = useState(initialState);
   const [isChecked, setIsChecked] = useState(false);
 
@@ -51,14 +53,15 @@ const Auth = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleChangeVertifyImg = async () => {
-    axios
-      .get("/api/verifyCode", {
-        responseType: "arraybuffer",
-      })
-      .then((res) => {
-        setVerifyImg(arrayBufferToBase64(res.data));
-      });
+  const handleChangeVertifyImg = () => {
+    setVerifyImg('/api/verifyCode' + '?' + new Date().getTime())
+    // axios
+    //   .get("/api/verifyCode", {
+    //     responseType: "arraybuffer",
+    //   })
+    //   .then((res) => {
+    //     setVerifyImg(arrayBufferToBase64(res.data));
+    //   });
   };
 
   /* 处理登录和注册 */
@@ -66,7 +69,8 @@ const Auth = () => {
     e.preventDefault();
     // 判断密码输入是否符合规范
     if (formData.password.length < 6 || formData.password.length > 16) {
-      alert("密码不符合规范请重新输入！");
+      alert.error("密码不符合规范请重新输入！");
+      return;
     }
     if (isSignup) {
       axios.post(
@@ -74,7 +78,7 @@ const Auth = () => {
       )
         .then((res) => {
           // if (res.data.msg === 200) {
-            alert(res.data.msg);
+            alert.info(res.data.msg);
           // }
         })
     } else {
@@ -88,8 +92,9 @@ const Auth = () => {
             CrateUser(res.data.data, addUser, getAllTitle, changeStutas, addTotalTime,addProblem,addHistory,addmyIntegral);
             GetBaseInfo(res.data.data, addBaseInfo);
             Router.replace('/home');
-          } else if (res.data.code === 600) {
-            alert(res.data.msg);
+          } else if (res.data.code === 600 || res.data.code === 500) {
+            alert.info(res.data.msg);
+            handleChangeVertifyImg();
           }
         })
     }
@@ -135,7 +140,7 @@ const Auth = () => {
                       name="grade"
                       type="text"
                       className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                      placeholder="年级"
+                      placeholder="年级(1,2,3)"
                       onChange={handleChange}
                     />
                   </div>

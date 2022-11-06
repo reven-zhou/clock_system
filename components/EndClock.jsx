@@ -3,8 +3,10 @@ import { GetAllGradesClock } from "../util/manageClock";
 import useAllGradesClockStore from "../store/clockStore";
 import axios from "axios";
 import { reqAdminEndClock } from "../api";
+import { useAlert } from "react-alert";
 
 const EndClock = ({ allGradesClock }) => {
+  const alert = useAlert();
   const [stateId, setStateId] = useState(new Set([]));
   const { addAllGradesClock } = useAllGradesClockStore();
 
@@ -12,8 +14,8 @@ const EndClock = ({ allGradesClock }) => {
     e.preventDefault();
     const params = Array.from(stateId);
     const userId = params[0];
-    reqAdminEndClock(userId).then(()=>{
-      alert('修改成功');
+    reqAdminEndClock(userId).then((data)=>{
+      alert.success(data.msg);
         GetAllGradesClock(
           JSON.parse(localStorage.getItem("token")),
           addAllGradesClock

@@ -4,10 +4,11 @@ import { GetBaseInfo } from "../util/getBaseInfo";
 import useCleanStore from "../store/cleanStore";
 import useBaseInfo from "../store/baseInfoStore";
 import { reqAddClean, reqModifyClean } from "../api";
-
+import { useAlert } from "react-alert";
 import axios from "axios";
 
 const CleanTable = ({ cleanInfo }) => {
+  const alert = useAlert();
   const { addCleanInfo } = useCleanStore();
   const { addBaseInfo } = useBaseInfo();
   const [cleanId, setCleanId] = useState();
@@ -22,8 +23,8 @@ const CleanTable = ({ cleanInfo }) => {
       realName,
       ruleWeek,
     };
-    reqAddClean(params).then(() => {
-      alert("添加成功");
+    reqAddClean(params).then((data) => {
+      alert.success(data.msg);
       setUserId("");
       setRealName("");
       setRuleWeek("");
@@ -39,8 +40,8 @@ const CleanTable = ({ cleanInfo }) => {
       realName,
       ruleWeek,
     };
-    reqModifyClean(params).then(() => {
-      alert("修改成功");
+    reqModifyClean(params).then((data) => {
+      alert.success(data.msg);
       setCleanId("");
       setUserId("");
       setRealName("");

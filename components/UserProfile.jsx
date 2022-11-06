@@ -2,8 +2,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { CrateUser } from "../util";
 import useAuthStore from "../store/authStore";
+import { useAlert } from "react-alert";
+import { reqCurTime, reqOnClock, reqEndClock } from "../api";
 
 const UserProfile = ({ user }) => {
+  const alert = useAlert();
   const { status, totalTime, changeStutas, addTotalTime, addUser } =
     useAuthStore();
   const [currentTime, setCurrentTime] = useState(user.curTime);
@@ -15,42 +18,24 @@ const UserProfile = ({ user }) => {
   }, [currentTime]);
 
   const handleCurTime = () => {
-    axios
-      .get(`http://101.43.184.218:9527/user/curClock`, {
-        headers: {
-          token: JSON.parse(localStorage.getItem("token")),
-        },
-      })
-      .then((res) => {
-        alert(res.data.msg);
-      });
+    reqCurTime().then((data) => {
+      alert.info(data.msg);
+    });
   };
 
   const handleClock = () => {
     if (status) {
-      axios
-        .post(`http://101.43.184.218:9527/user/endClock`, '',{
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-          },
-        })
-        .then((res) => {
-          setCurrentTime(parseInt(res.data.data / 60));
-          alert(res.data.msg);
-          addTotalTime(res.data.data);
-          changeStutas(!status);
-        });
+      reqEndClock().then((data) => {
+        setCurrentTime(parseInt(data.data / 60));
+        alert.info(data.msg);
+        addTotalTime(data.data);
+        changeStutas(!status);
+      });
     } else {
-      axios
-        .post(`http://101.43.184.218:9527/user/startClock`, '',{
-          headers: {
-            token: JSON.parse(localStorage.getItem("token")),
-          },
-        })
-        .then((res) => {
-          alert(res.data.msg);
-          changeStutas(!status);
-        });
+      reqOnClock().then((data) => {
+        alert.info(data.msg);
+        changeStutas(!status);
+      });
     }
   };
 
@@ -64,7 +49,7 @@ const UserProfile = ({ user }) => {
             className="rounded-full w-20 h-20 object-cover"
             src={user.userImage}
           />
-          <p className="inline text-gray-700 ml-2 font-medium text-xl">
+          <p className="inline text-gray-700 ml-4 font-medium text-xl" style={{ color: "rgb(107, 136, 181)" }}>
             {user.username}
           </p>
         </div>
@@ -72,18 +57,34 @@ const UserProfile = ({ user }) => {
 
       <div className="text-center">
         {/* <Link href={`/post/${post.slug}`}> */}
-        <span className="transition duration-500 ease transform hover:-translate-y-1 inline-block text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer" style={{"backgroundColor":"rgb(81, 140, 180)"}}>
-          已完成: {parseInt(totalTime/60)}
+        <span
+          className="transition duration-500 ease transform hover:-translate-y-1 inline-block text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
+          style={{ backgroundColor: "rgb(81, 140, 180)" }}
+        >
+          已完成: {(totalTime / 60).toFixed(1)}h
         </span>
         {/* </Link> */}
       </div>
 
       <div className="text-center">
         {/* <Link href={`/post/${post.slug}`}> */}
-        <span className="transition duration-500 ease transform hover:-translate-y-1 inline-block text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer" style={{"backgroundColor":"rgb(81, 140, 180)"}}>
-          要求: {parseInt(user.tempTime/60)}
+        <span
+          className="transition duration-500 ease transform hover:-translate-y-1 inline-block text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
+          style={{ backgroundColor: "rgb(81, 140, 180)" }}
+        >
+          要求: {parseInt(user.tempTime / 60)}h
         </span>
         {/* </Link> */}
+      </div>
+
+      <div className="text-center">
+        <span
+          onClick={handleCurTime}
+          className="transition duration-500 ease transform hover:-translate-y-1 inline-block bg-accent text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
+          style={{ backgroundColor: "rgb(81, 140, 180)" }}
+        >
+          当前打卡
+        </span>
       </div>
 
       <div className="text-center">
@@ -98,7 +99,7 @@ const UserProfile = ({ user }) => {
           <span
             onClick={handleClock}
             className="transition duration-500 ease transform hover:-translate-y-1 inline-block text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
-            style={{"backgroundColor":"rgb(81, 140, 180)"}}
+            style={{ backgroundColor: "rgb(81, 140, 180)" }}
           >
             开始打卡
           </span>
@@ -106,19 +107,13 @@ const UserProfile = ({ user }) => {
       </div>
 
       <div className="text-center">
-        <span
-          onClick={handleCurTime}
-          className="transition duration-500 ease transform hover:-translate-y-1 inline-block bg-accent text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
-          style={{"backgroundColor":"rgb(81, 140, 180)"}}
-        >
-          当前打卡
-        </span>
-      </div>
-
-      <div className="text-center">
         <div
           className="radial-progress text-primary-content border-4"
-          style={{ "--value": parseInt((parseInt(totalTime / 60) / 38) * 100),"backgroundColor":"rgb(81, 140, 180)","borderColor":"rgb(157, 198, 218)" }}
+          style={{
+            "--value": parseInt((parseInt(totalTime / 60) / 38) * 100),
+            backgroundColor: "rgb(81, 140, 180)",
+            borderColor: "rgb(157, 198, 218)",
+          }}
         >
           {parseInt((parseInt(totalTime / 60) / 38) * 100) + "%"}
         </div>

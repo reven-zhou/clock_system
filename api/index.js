@@ -7,7 +7,7 @@ import ajax from "./ajax";
 // 注册
 
 // 注销
-export const reqLogOut = ()=>ajax('/api1/user/lout',null,'GET');
+export const reqLogOut = () => ajax('/api1/user/lout', null, 'GET');
 
 // 获取所有菜单
 export const reqGetAllTitle = () => ajax('/api1/user/getMenus', null, 'GET');
@@ -58,7 +58,7 @@ export const reqGetAllCard = () => ajax('/api1/user/listCards', null, 'GET');
 export const reqGetCard = () => ajax('/api1/user/sample', null, 'GET');
 
 // 用卡
-export const reqUseCard = (userCardId, userId) => ajax(`/api1/user/useCard?cardId=${userCardId}&userId=${userId}`);
+export const reqUseCard = (userCardId, userId) => ajax(`/api1/user/useCard?cardId=${userCardId}&userId=${userId}`, null, 'POST');
 
 // 融卡
 export const reqMeltCard = (userCardId) => ajax(`/api1/user/meltCard?cardId=${userCardId}`, null, 'POST');
@@ -70,4 +70,13 @@ export const reqGetSystem = () => ajax('/api1/manager/listSystemConf', null, 'GE
 export const reqModifySystem = (data) => ajax('/api1/manager/modifySystemConf', data, 'POST');
 
 // 管理员下卡
-export const reqAdminEndClock = (userId) => ajax(`/api1/captain/endClockByUserId?userId=${userId}`, null, 'POST')
+export const reqAdminEndClock = (userId) => ajax(`/api1/captain/endClockByUserId?userId=${userId}`, null, 'POST');
+
+// 打卡
+export const reqOnClock = () => ajax('/api1/user/startClock', null, "POST");
+
+// 下卡
+export const reqEndClock = () => ajax('/api1/user/endClock', null, "POST");
+
+// 查看当前时间
+export const reqCurTime = () => ajax('/api1/user/curClock', null, "GET")

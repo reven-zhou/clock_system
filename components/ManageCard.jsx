@@ -4,6 +4,7 @@ import { GetLiatCard } from "../util/getLIstCard";
 import useCardStore from "../store/cardSrore";
 import useAuthStore from "../store/authStore";
 import { reqUseCard, reqGetCard, reqMeltCard } from "../api";
+import { useAlert } from "react-alert";
 
 /* 这里不要了，改成动态的 */
 const listCard = [
@@ -11,47 +12,48 @@ const listCard = [
     cardId: 1,
     name: "减时卡",
     description: "让自己本周的打卡目标时长暂时减一",
-    odds: "70%",
+    odds: "7%",
   },
   {
     cardId: 2,
     name: "加时卡",
     description: "让本周本年级的某位同学打卡目标时长暂时加一，限周六前使用",
-    odds: "60%",
+    odds: "6%",
   },
   {
     cardId: 3,
     name: "恶魔卡",
     description: "让本周本年级的所有同学目标打卡时长暂时加一，限周六前使用",
-    odds: "30%",
+    odds: "3%",
   },
   {
     cardId: 4,
     name: "天使卡",
     description: "让本周本年级的所有同学目标打卡时长暂时减一",
-    odds: "10%",
+    odds: "1%",
   },
   {
     cardId: 5,
     name: "福利卡",
     description: "让自己的目标打卡时长永久减一",
-    odds: "10%",
+    odds: "1%",
   },
   {
     cardId: 6,
     name: "黑卡",
     description: "让本年级的一位同学目标打卡时长永久加一，限周六前使用",
-    odds: "20%",
+    odds: "2%",
   },
   {
     cardId: 7,
     name: "?卡",
     description: "随机让本学年一位同学本周目标打卡时长随机+-1",
-    odds: "60%",
+    odds: "6%",
   },
 ];
 
 const ManageCard = ({ user }) => {
+  const alert = useAlert();
   const { allCard, addMyCard } = useCardStore();
   const { myIntegral, addUser, addmyIntegral } = useAuthStore();
   const [userId, setUserId] = useState("");
@@ -65,37 +67,49 @@ const ManageCard = ({ user }) => {
   /* 抽卡 */
   const handleGetCard = (e) => {
     e.preventDefault();
-    reqGetCard().then(() => {
-      if (myIntegral - 1 >= 0) {
-        addmyIntegral(myIntegral - 1);
+    reqGetCard().then((data) => {
+      if (data.code === 200) {
+        if (myIntegral - 1 >= 0) {
+          addmyIntegral(myIntegral - 1);
+        }
+        alert.info(data.msg);
+      } else {
+        alert.info("抽卡失败或者积分不足。");
       }
-      alert("成功");
     });
   };
 
   /* 融卡 */
   const handleMeltCard = (e) => {
     e.preventDefault();
-    reqMeltCard(userCardId).then(() => {
+    reqMeltCard(userCardId).then((data) => {
       // addUser({ ...user, ["integral"]: integral + 1 });
-      // if (res.data.msg === "融换成功!") {
-      addmyIntegral(myIntegral + 1);
-      alert("融化成功");
-      // }
-      // if (res.data.code === 200) {
-      //   alert(res.data.msg + "请刷新!");
-      // } else {
-      //   alert("是不是还没选卡?");
-      // }
+
+      if (data.code === 200) {
+        addmyIntegral(myIntegral + 1);
+        alert.success("融化成功");
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      } else {
+        alert.error("是不是还没选卡?");
+      }
     });
   };
 
   /* 用卡 */
   const handleUseCard = (e) => {
     e.preventDefault();
-    reqUseCard(userCardId, userId).then(() => {
-      alert("成功!请刷新!");
-      setUserId("");
+    reqUseCard(userCardId, userId).then((data) => {
+      if (data.code === 200) {
+        alert.info(data.msg);
+        setUserId("");
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      } else {
+        alert.info("没选卡或者没输id?");
+      }
     });
   };
 
@@ -107,9 +121,10 @@ const ManageCard = ({ user }) => {
           <input type="checkbox" className="peer" />
           <div
             style={{ backgroundColor: "rgb(81, 140, 180)" }}
-            className="collapse-title text-xl text-primary-content peer-checked:text-secondary-content"
+            className="collapse-title text-xl text-primary-content peer-checked:text-secondary-content flex flex-row items-center"
           >
             卡券相关规则
+            <div className="ml-2 font-semibold text-2xl text-center">{">"}</div>
           </div>
           <div
             style={{ backgroundColor: "rgb(81, 140, 180)" }}
@@ -133,9 +148,10 @@ const ManageCard = ({ user }) => {
           <input type="checkbox" className="peer" />
           <div
             style={{ backgroundColor: "rgb(81, 140, 180)" }}
-            className="collapse-title text-xl text-primary-content peer-checked:text-secondary-content"
+            className="collapse-title text-xl text-primary-content peer-checked:text-secondary-content flex flex-row items-center"
           >
-            概率公示
+            卡券说明
+            <div className="ml-2 font-semibold text-2xl text-center">{">"}</div>
           </div>
           <div
             style={{ backgroundColor: "rgb(81, 140, 180)" }}
@@ -279,7 +295,7 @@ function Table({ card, setUserCardId }) {
       <td>{card.cardId}</td>
       <td>{card.name}</td>
       <td>{card.description}</td>
-      <td>{card.odds * 10 + "%"}</td>
+      <td>{card.odds + "%"}</td>
       <td>{card.num}</td>
     </tr>
   );

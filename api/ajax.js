@@ -1,4 +1,5 @@
 import axios from "axios";
+import { reqLogOut } from ".";
 // import { useAlert } from "react-alert";
 
 
@@ -34,14 +35,11 @@ export default function ajax(url, data = {}, type = 'GET') {
             if (error.response.status) {
                 if (error.response.status === 504 || error.response.status === 404) {
                     alert('服务器被吃了( ╯□╰ )')
-                } else if (error.response.status === 403) {
-                    alert('权限不足，请联系管理员')
-                } else if (error.response.status === 401 || error.response.status === 500) {
-                    // reqLogout().then(() => {
-                    //     storageUtils.removeUser();
-                    //     window.location.reload();
-                    // })
-                    alert('尚未登录，请登录');
+                } else if (error.response.status === 403 || error.response.status === 401) {
+                    // alert('权限不足，请联系管理员');
+                    
+                    localStorage.clear();
+                    window.location = '/auth'
                 } else {
                     if (error.response.data.msg) {
                         alert(error.response.data.msg)

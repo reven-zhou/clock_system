@@ -9,18 +9,13 @@ const Card = () => {
     const { userProfile } = useAuthStore();
     const { allCrad, addMyCard } = useCardStore();
 
-    if (localStorage.getItem('token')) {
-        return (
-            <div className="container mx-auto px-10 mb-8">
-                <div className="grid grid-cols-1 gap-12">
-                    <ManageCard user={userProfile} />
-                </div>
+    return (
+        <div className="container mx-auto px-10 mb-8">
+            <div className="grid grid-cols-1 gap-12">
+                <ManageCard user={userProfile} />
             </div>
-        )
-    } else {
-        Router.replace('/auth');
-    }
-
+        </div>
+    )
 
 }
 

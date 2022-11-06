@@ -15,8 +15,8 @@ const SystemConf = ({ allSystem }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = { id, name, status, value, description };
-    reqModifySystem(params).then(() => {
-      alert(修改成功);
+    reqModifySystem(params).then((data) => {
+      alert(data.msg);
       GetSystem(JSON.parse(localStorage.getItem("token")), addSystem);
       setId("");
       setName("");

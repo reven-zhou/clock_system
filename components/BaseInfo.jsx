@@ -49,28 +49,34 @@ const BaseInfo = ({ baseInfo, user }) => {
     }
   };
 
+  /* 修改头像 */
   const handleSubmit = (e) => {
     e.preventDefault();
     const formdata = new FormData();
     //可以通过append()方法来追加数据
     formdata.append("avatar", avatarFile);
-    reqModifyAvatar(formdata).then(() => {
-      alert.success("修改成功");
-      setImageAsset("");
-      setAvatarFile("");
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    });
+    axios
+      .post("/api1/user/modifyAvatar", formdata, {
+        headers: { token: JSON.parse(localStorage.getItem("token")) },
+      })
+      .then((res) => {
+        alert.success(res.data.msg);
+        setImageAsset("");
+        setAvatarFile("");
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      });
   };
 
+  /* 修改信息 */
   const handleChangeNotify = (e) => {
     e.preventDefault();
     if (newNotify === "") {
       alert.error("宣言不能为空");
     } else {
-      reqModifyNotify(newNotify).then(() => {
-        alert.success("修改成功");
+      reqModifyNotify(newNotify).then((data) => {
+        alert.success(data.msg);
         setTimeout(() => {
           window.location.reload();
         }, 500);
@@ -328,18 +334,26 @@ const BaseInfo = ({ baseInfo, user }) => {
                 </div>
 
                 {/* 每日一题 */}
+
                 <div className="flex flex-col mt-4 mb-4">
-                  <div
-                    className="btn mb-4"
+                  <a
+                    href={dayProblem.url}
+                    target="blank"
+                    className="w-full btn mb-4"
                     style={{
                       color: "rgb(168, 177, 184)",
                       backgroundColor: "white",
                     }}
                   >
-                    <a href={dayProblem.url} target="blank">
+                    <div
+                      style={{
+                        color: "rgb(168, 177, 184)",
+                        backgroundColor: "white",
+                      }}
+                    >
                       每日一题
-                    </a>
-                  </div>
+                    </div>
+                  </a>
                   <div
                     className="flex justify-between p-4 border rounded-lg text-white"
                     style={{ backgroundColor: "rgb(168, 177, 184)" }}
@@ -409,7 +423,7 @@ const BaseInfo = ({ baseInfo, user }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex justify-center">
+                  <div className="flex justify-center h-96">
                     <img
                       className="w-1/2 items-center justify-center"
                       src={bgImg.src}

@@ -4,18 +4,7 @@ import axios from "axios";
 import { reqGetAllTitle, reqGetGradeClock } from '../api';
 
 const authStore = (set) => ({
-    userProfile: {
-        userId: "",
-        username: "",
-        userGrade: "",
-        userImage: "",
-        userNotify: "",
-        userIntegral: "",
-        curTime: "",
-        tempTime: "",
-        online: "",
-        integral: ""
-    },
+    userProfile: null,
     myIntegral: 0,
     totalTime: 0,
     dayProblem: {},
@@ -33,12 +22,12 @@ const authStore = (set) => ({
     removeTitle: () => set({ allTitle: [] }),
     catchAllClock: (grade) => {
         reqGetGradeClock(grade).then((data) => {
-            set({ allClock: data });
+            set({ allClock: data.data });
         })
     },
     getAllTitle: () => {
         reqGetAllTitle().then((data) => {
-            set({ allTitle: data });
+            set({ allTitle: data.data });
         })
     },
 })

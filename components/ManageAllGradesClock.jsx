@@ -2,8 +2,10 @@ import React, { useState, useRef } from "react";
 import { GetAllGradesClock } from "../util/manageClock";
 import useAllGradesClockStore from "../store/clockStore";
 import { reqModifySomeClock, reqModifyPersonClock } from "../api";
+import { useAlert } from "react-alert";
 
 const ManageAllGradesClock = ({ allGradesClock }) => {
+  const alert = useAlert();
   const [stateId, setStateId] = useState(new Set([]));
   const [userId, setUserId] = useState("");
   const [curTime, setCurTime] = useState("");
@@ -12,11 +14,12 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
   const [time, setTime] = useState("");
   const { addAllGradesClock } = useAllGradesClockStore();
 
+  // 批量修改
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = Array.from(stateId);
-    reqModifySomeClock(time, params).then(() => {
-      alert("修改成功");
+    reqModifySomeClock(time, params).then((data) => {
+      alert.success(data.msg);
       GetAllGradesClock(
         JSON.parse(localStorage.getItem("token")),
         addAllGradesClock
@@ -25,6 +28,7 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
     });
   };
 
+  // 修改个人打卡信息
   const handlePersonSubmit = (e) => {
     e.preventDefault();
     const params = {
@@ -33,8 +37,8 @@ const ManageAllGradesClock = ({ allGradesClock }) => {
       tempTime,
       allTime,
     };
-    reqModifyPersonClock(params).then(() => {
-      alert("修改成功");
+    reqModifyPersonClock(params).then((data) => {
+      alert(data.msg);
       GetAllGradesClock(
         JSON.parse(localStorage.getItem("token")),
         addAllGradesClock

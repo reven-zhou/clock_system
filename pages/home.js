@@ -10,7 +10,7 @@ const Home = () => {
   const { userProfile, addmyIntegral, addUser, getAllTitle, changeStutas, addTotalTime, addProblem, addHistory } = useAuthStore();
   const { baseInfo, addBaseInfo } = useBaseInfo();
 
-  if (localStorage.getItem('token')) {
+  // if (localStorage.getItem('token')) {
     useEffect(() => {
       CrateUser(JSON.parse(localStorage.getItem('token')), addUser, getAllTitle, changeStutas, addTotalTime, addProblem, addHistory, addmyIntegral);
       GetBaseInfo(JSON.parse(localStorage.getItem('token')), addBaseInfo);
@@ -23,9 +23,9 @@ const Home = () => {
         </div>
       </div>
     )
-  }else{
-    Router.replace('/auth');
-  }
+  // }else{
+  //   Router.replace('/auth');
+  // }
 }
 
 export default Home;
