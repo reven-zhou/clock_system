@@ -46,7 +46,7 @@ const Header = () => {
 
   const handleLogout = () => {
     reqLogOut().then(() => {
-      Router.replace("/");
+      Router.replace("/auth");
       removeUser();
       removeTitle();
       localStorage.clear();
@@ -151,7 +151,7 @@ const Header = () => {
                   if (
                     title.key !== "/sophomore" &&
                     title.key !== "/others" &&
-                    title.title !== "所有" &&
+                    title.title !== "首页" &&
                     title.title !== "考勤管理" &&
                     title.title !== "用户信息" &&
                     title.title !== "管理员菜单头" &&
@@ -164,7 +164,7 @@ const Header = () => {
                         className="text-base font-medium text-gray-500 hover:text-white"
                       >
                         <div className="transition delay-50 duration-300 text-gray-500 hover:text-white hover:bg-rose-500/50 cursor-pointer p-2 rounded-lg">
-                          {title.title}
+                          {title.title === "所有" ? "首页" : title.title}
                         </div>
                       </Link>
                     );

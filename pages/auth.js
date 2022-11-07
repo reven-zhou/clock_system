@@ -91,7 +91,7 @@ const Auth = () => {
             localStorage.setItem('token', JSON.stringify(res.data.data))
             CrateUser(res.data.data, addUser, getAllTitle, changeStutas, addTotalTime,addProblem,addHistory,addmyIntegral);
             GetBaseInfo(res.data.data, addBaseInfo);
-            Router.replace('/home');
+            Router.replace('/');
           } else if (res.data.code === 600 || res.data.code === 500) {
             alert.info(res.data.msg);
             handleChangeVertifyImg();

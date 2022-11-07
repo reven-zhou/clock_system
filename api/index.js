@@ -43,13 +43,13 @@ export const reqModifyPersonClock = (data) => ajax('/api1/manager/modifyClock', 
 export const reqModifySomeClock = (time, data) => ajax(`/api1/manager/modifySomeTempTime?time=${time}`, data, 'POST');
 
 // 获取所有值日信息
-export const reqGetAllClean = () => ajax('/api1/manager/getCleanAll', null, 'GET');
+export const reqGetAllClean = () => ajax('/api1/captain/getCleanAll', null, 'GET');
 
 // 添加值日人员
-export const reqAddClean = (data) => ajax('/api1/manager/addClean', data, 'POST');
+export const reqAddClean = (data) => ajax('/api1/captain/addClean', data, 'POST');
 
 // 修改值日人员信息
-export const reqModifyClean = (data) => ajax('/api1/manager/modifyClean', data, 'POST');
+export const reqModifyClean = (data) => ajax('/api1/captain/modifyClean', data, 'POST');
 
 // 获取所有卡券
 export const reqGetAllCard = () => ajax('/api1/user/listCards', null, 'GET');
@@ -69,7 +69,7 @@ export const reqGetSystem = () => ajax('/api1/manager/listSystemConf', null, 'GE
 // 修改系统配置
 export const reqModifySystem = (data) => ajax('/api1/manager/modifySystemConf', data, 'POST');
 
-// 管理员下卡
+// 队长和管理员下卡
 export const reqAdminEndClock = (userId) => ajax(`/api1/captain/endClockByUserId?userId=${userId}`, null, 'POST');
 
 // 打卡
