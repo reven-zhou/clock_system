@@ -110,12 +110,12 @@ const UserProfile = ({ user }) => {
         <div
           className="radial-progress text-primary-content border-4"
           style={{
-            "--value": (totalTime / user.tempTime).toFixed(2) * 100,
+            "--value": ((totalTime / user.tempTime)* 100).toFixed(2) ,
             backgroundColor: "rgb(81, 140, 180)",
             borderColor: "rgb(157, 198, 218)",
           }}
         >
-          {(totalTime / user.tempTime).toFixed(2) * 100 + "%"}
+          {((totalTime / user.tempTime)* 100).toFixed(2) + "%"}
         </div>
       </div>
     </div>

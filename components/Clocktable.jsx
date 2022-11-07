@@ -62,6 +62,7 @@ const Clocktable = ({ grade, allClock }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {parseInt(clock.tempTime / 60) + "h"}
+
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 items-center">
                         {clock.online === 1 ? (
