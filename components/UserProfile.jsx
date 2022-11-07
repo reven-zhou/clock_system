@@ -61,7 +61,7 @@ const UserProfile = ({ user }) => {
           className="transition duration-500 ease transform hover:-translate-y-1 inline-block text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
           style={{ backgroundColor: "rgb(81, 140, 180)" }}
         >
-          已完成: {(totalTime / 60).toFixed(1)}h
+          已完成: {(totalTime / 60).toFixed(2)}h
         </span>
         {/* </Link> */}
       </div>
@@ -110,12 +110,12 @@ const UserProfile = ({ user }) => {
         <div
           className="radial-progress text-primary-content border-4"
           style={{
-            "--value": parseInt((parseInt(totalTime / 60) / 38) * 100),
+            "--value": ((totalTime / user.tempTime)* 100).toFixed(2) ,
             backgroundColor: "rgb(81, 140, 180)",
             borderColor: "rgb(157, 198, 218)",
           }}
         >
-          {parseInt((parseInt(totalTime / 60) / 38) * 100) + "%"}
+          {((totalTime / user.tempTime)* 100).toFixed(2) + "%"}
         </div>
       </div>
     </div>

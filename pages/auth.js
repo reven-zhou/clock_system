@@ -34,13 +34,13 @@ const Auth = () => {
   const {addmyIntegral, addUser, getAllTitle, changeStutas, addTotalTime,addProblem,addHistory } = useAuthStore();
   const { addBaseInfo } = useBaseInfo();
   const [isSignup, setIsSignup] = useState(false);
-  const [verifyImg, setVerifyImg] = useState('/api/verifyCode');
+  const [verifyImg, setVerifyImg] = useState('/api/noauth/verifyCode');
   const [formData, setFormData] = useState(initialState);
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     axios
-      .get("/api/verifyCode", {
+      .get("/api/noauth/verifyCode", {
         responseType: "arraybuffer",
       })
       .then((res) => {
@@ -54,14 +54,7 @@ const Auth = () => {
   };
 
   const handleChangeVertifyImg = () => {
-    setVerifyImg('/api/verifyCode' + '?' + new Date().getTime())
-    // axios
-    //   .get("/api/verifyCode", {
-    //     responseType: "arraybuffer",
-    //   })
-    //   .then((res) => {
-    //     setVerifyImg(arrayBufferToBase64(res.data));
-    //   });
+    setVerifyImg('/api/noauth/verifyCode' + '?' + new Date().getTime())
   };
 
   /* 处理登录和注册 */
@@ -74,7 +67,7 @@ const Auth = () => {
     }
     if (isSignup) {
       axios.post(
-        `/api/regis?username=${formData.username}&password=${formData.password}&grade=${formData.grade}&realname=${formData.realname}`
+        `/api/noauth/regis?username=${formData.username}&password=${formData.password}&grade=${formData.grade}&realname=${formData.realname}`
       )
         .then((res) => {
           // if (res.data.msg === 200) {
@@ -84,7 +77,7 @@ const Auth = () => {
     } else {
       axios
         .post(
-          `/api/login?username=${formData.username}&password=${formData.password}&code=${formData.code}`
+          `/api/noauth/login?username=${formData.username}&password=${formData.password}&code=${formData.code}`
         )
         .then((res) => {
           if (res.data.code === 200) {

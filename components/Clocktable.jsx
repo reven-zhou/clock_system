@@ -8,13 +8,6 @@ const Clocktable = ({ grade, allClock }) => {
     "ID",
     "姓名",
     "头像",
-    // "周一",
-    // "周二",
-    // "周三",
-    // "周四",
-    // "周五",
-    // "周六",
-    // "周日",
     "本周时长",
     "周一重置",
     "本周目标",
@@ -51,38 +44,17 @@ const Clocktable = ({ grade, allClock }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {clock.realname}
                       </td>
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.monTime/60)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.tueTime/60)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.wedTime/60)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.thuTime/60)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.friTime/60)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.satTime/60)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.sunTime/60)}
-                      </td> */}
                       <td className=" py-4 whitespace-nowrap text-sm font-medium text-gray-900 items-center text-center">
                         <img src={clock.avatar} alt="avatar" className="rounded-full w-10 mx-auto"/>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.curTime/60)}
+                        {(clock.curTime/60).toFixed(2)+'h'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.allTime/60)}
+                        {parseInt(clock.allTime/60)+'h'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {parseInt(clock.tempTime /60)}
+                        {parseInt(clock.tempTime /60)+'h'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 items-center">
                         {clock.online === 1 ? (

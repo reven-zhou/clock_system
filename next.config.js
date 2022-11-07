@@ -7,12 +7,8 @@ const nextConfig = {
       fallback: [
         {
           source: '/api/:path*',
-          destination: `http://swpulec.com/api/:path*`,
+          destination: `http://127.0.0.1:9527/api/:path*`,
         },
-        {
-          source: '/api1/:path*',
-          destination: `http://swpulec.com/:path*`,
-        }
       ],
     }
   },

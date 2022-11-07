@@ -56,7 +56,7 @@ const BaseInfo = ({ baseInfo, user }) => {
     //可以通过append()方法来追加数据
     formdata.append("avatar", avatarFile);
     axios
-      .post("/api1/user/modifyAvatar", formdata, {
+      .post("/api/user/modifyAvatar", formdata, {
         headers: { token: JSON.parse(localStorage.getItem("token")) },
       })
       .then((res) => {
@@ -177,7 +177,7 @@ const BaseInfo = ({ baseInfo, user }) => {
                     <div className="flex flex-row">
                       <div className="flex flex-row">
                         本周值日生：
-                        {baseInfo.names?.map((item) => {
+                        {baseInfo.names.length === 0?'无':baseInfo.names?.map((item) => {
                           return (
                             <div key={Math.random()} className="mr-4">
                               {item}
